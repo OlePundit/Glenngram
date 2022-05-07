@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewUserWelcomeMail;
 
 class User extends Authenticatable
 {
@@ -34,6 +36,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function($user) {
+            $user->profile()->create([
+                'title'=>$user->Username,
+            ]);
+
+            Mail::to($user->email)->send(new NewUserWelcomeMail());
+        });
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -43,15 +58,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-Public function posts()
-{
-    return $this->hasMany(Post::class)->latest();
-}
+    Public function posts()
+    {
+        return $this->hasMany(Post::class)->latest();
+    }
+
+    Public function following()
+    {
+        return $this->belongsToMany(Profile::class);
+    }
 
 
-Public function profile()
-{
-    return $this->hasOne(Profile::class);
-}
+    Public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
 
 }

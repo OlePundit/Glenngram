@@ -4,22 +4,34 @@
 <div class="container">
     <div class="row">
         <div class="col-3 p-5">
-            <img src="../Profile image/Profile image/Profile image.jpg" class="rounded-circle">
+            <img src="{{ $user->profile->profileImage() }}" class="rounded-circle w-100">
 
         </div>
         <div class="col-9 pt-5">
             <div class="d-flex justify-content-between align-items-baseline">
-                <h1>{{ $user->Username }}</h1>
+                <div class="d-flex align-items-center pb-3">
+                    <div class="h4">{{ $user->Username }}</div>
+
+                   <follow-button user-id="{{$user->id}}" follows ="{{$follows}}"></follow-button>
+                    </div>
+
+                @can ('update', $user->profile)
                 <a href= "/p/create"> Add New Post</a>
+            @endcan
+
+                
                 
             </div>
+            @can ('update', $user->profile)
             <a href= "/Profile/{{$user->id}}/edit"> Edit Profile</a>
+            @endcan
+            
                     
                 
             <div class="d-flex">
-                <div style="padding-right: 25px;"><strong>{{ $user->posts->count() }}</strong> posts</div>
-                <div style="padding-right: 25px;"><strong>2M</strong> followers</div>
-                <div style="padding-right: 25px;"><strong>300</strong> following</div>
+                <div style="padding-right: 25px;"><strong>{{ $postCount }}</strong> posts</div>
+                <div style="padding-right: 25px;"><strong>{{$followersCount}}</strong> followers</div>
+                <div style="padding-right: 25px;"><strong>{{$followingCount}}</strong> following</div>
 
             </div>
             <div><strong>{{$user->profile->title}}</strong></div>
@@ -29,7 +41,7 @@
         <div class="row pt-5">
             @foreach($user->posts as $post)
             <div class="col-4 pb-4">
-            <a href = "/p/{{$post->id}}"> <img src="storage/{{ $post->image }}" class="w-100"></a>
+            <a href = "/p/{{$post->id}}"> <img src="/storage/{{ $post->image }}" class="w-100"></a>
             </div>
         @endforeach
         </div>

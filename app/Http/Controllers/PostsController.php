@@ -8,7 +8,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\image;
-use App\Models\User;
+use App\Models\Post;
 
 
 
@@ -19,54 +19,45 @@ class PostsController extends Controller
     {
         $this->middleware('auth');
     }
+
+    public function index()
+    {
+        $users = auth()->user()->following()->pluck('profiles.user_id');
+
+        $posts = Post::whereIn('user_id', $users)->with('user')->latest()->paginate(5);
+
+        return view('posts.index', compact('posts'));
+    }
+
     public function create()
     {
     return view('posts.create');
     }
 
-    public function store(Request $request)
+    public function store()
     {
-        $data = $request->validate([
-                //'another =>'', Tells laravel to ignore all other fields
-                
-                'caption'=>'required',
-                'image'=> 'required' ,
-        ]);
-        
-
-        if($request->hasfile('image'))
-        {
-            $imagePath = $request->file('image');
-            $extension = $imagePath->getClientOriginalExtension();
-            $filename = time().'.'.$extension;
-            $imagePath->storeAs('public/uploads/', $filename);
-            
-        }
-
-        //research more on intervention
-
-     
- 
-
-        $data = Auth::user()->posts()->create([
-            'caption'=>$request->caption,
-            'image'=>$request->image,
+        $data = request()->validate([
+            'caption' => 'required',
+            'image' => ['required', 'image'],
         ]);
 
-        $data = Auth::id();
-        
+        $imagePath = request('image')->store('uploads', 'public');
 
-        return redirect()->route('Profile.show', [$data]);
-       
-        //goes ahead and grabs the authenticated user
-      
+        $image = Image::make(public_path("storage/{$imagePath}"))->fit(1200, 1200);
+        $image->save();
+
+        auth()->user()->posts()->create([
+            'caption' => $data['caption'],
+            'image' => $imagePath,
+        ]);
+
+        return redirect('/profile/' . auth()->user()->id);
     }
 
     public function show(\App\Models\Post $post)
     {
-        
-        return view('posts.show', compact ('post'));
+        return view('posts.show', compact('post'));
     }
+}
 
     
-}

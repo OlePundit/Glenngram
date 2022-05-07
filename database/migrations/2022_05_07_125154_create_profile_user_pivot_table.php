@@ -13,16 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('profiles', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBiginteger('user_id');
-            $table->string('title')->nullable();
-            $table->text('description')->nullable();
-            $table->string('url')->nullable();
-            $table->string('image')->nullable();
+        Schema::create('profile_user', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('profile_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
-
-            $table->index('user_id');
         });
     }
 
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profiles');
+        Schema::dropIfExists('profile_user');
     }
 };
