@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Intervention\Image\Facades\image;
+use Intervention\Image\Facades\Image;
 use App\Models\Post;
 
 

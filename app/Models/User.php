@@ -36,18 +36,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function($user) {
-            $user->profile()->create([
-                'title'=>$user->Username,
-            ]);
-
-            Mail::to($user->email)->send(new NewUserWelcomeMail());
-        });
-    }
 
     /**
      * The attributes that should be cast.

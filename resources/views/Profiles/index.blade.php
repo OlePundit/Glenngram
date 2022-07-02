@@ -10,10 +10,10 @@
         <div class="col-9 pt-5">
             <div class="d-flex justify-content-between align-items-baseline">
                 <div class="d-flex align-items-center pb-3">
-                    <div class="h4">{{ $user->Username }}</div>
+                    <div class="h4" style="padding-right: 25px;">{{ $user->Username }}</div>
 
                    <follow-button user-id="{{$user->id}}" follows ="{{$follows}}"></follow-button>
-                    </div>
+                </div>
 
                 @can ('update', $user->profile)
                 <a href= "/p/create"> Add New Post</a>
@@ -21,7 +21,7 @@
 
                 
                 
-            </div>
+        </div>
             @can ('update', $user->profile)
             <a href= "/Profile/{{$user->id}}/edit"> Edit Profile</a>
             @endcan
